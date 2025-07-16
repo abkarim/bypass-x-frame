@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
+const helmet = require("helmet");
 const app = express();
 const port = 3000;
 
@@ -26,12 +27,25 @@ function prepareFinalData(data, domain) {
 }
 
 app.use(cors());
+app.use(
+    helmet({
+        xFrameOptions: false,
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'none'"],
+                frameAncestors: ["*"],
+            },
+        },
+    })
+);
 
 app.get("/bypass/*", async (req, res) => {
     const url = req.params[0];
     const domain = extractDomain(url);
 
     try {
+        res.status(200).send("hello");
+        return;
         const response = await axios.get(url);
         const html = response.data;
 
