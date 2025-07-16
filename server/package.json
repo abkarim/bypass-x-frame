@@ -4,6 +4,7 @@
   "description": "Bypass x-frame issues via forwarding requests",
   "main": "bypass.js",
   "scripts": {
+    "dev": "node --watch app.js",
     "start": "node app.js"
   },
   "repository": {
