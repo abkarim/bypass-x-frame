@@ -1,12 +1,13 @@
-const express = require("express");
-const axios = require("axios");
-const cors = require("cors");
-const helmet = require("helmet");
-const https = require("https");
-const {
-    cleanAndSetResponseHeader,
+import express from "express";
+import axios from "axios";
+import cors from "cors";
+import helmet from "helmet";
+import https from "https";
+import {
     cleanAndReturnRequestHeader,
-} = require("./util/headers");
+    cleanAndSetResponseHeader,
+} from "./util/headers.js";
+
 const app = express();
 const port = 3000;
 
@@ -76,6 +77,7 @@ app.use("/bypass/*", async (req, res) => {
             res.json(data);
         } else if (contentType.includes("text/")) {
             data = Buffer.from(response.data).toString("utf-8");
+            console.log("text");
             res.send(data);
         } else {
             data = Buffer.from(response.data);
