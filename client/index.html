@@ -6,12 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bypass x-frame</title>
-    <script src="./bypass.js" defer></script>
+    <!-- Only use these js if you want to use title, favicon etc features from the iframe
+     and it's intended for only one iframe element in this file -->
+    <link rel="stylesheet" href="/assets/style.css">
+    <script src="/assets/pretendMainPage.js" defer></script>
+
 </head>
 
-<iframe bypass-x-frame="https://youtube.com" width="100%" style="height: 100vh;"></iframe>
-
 <body>
+    <iframe src="http://localhost:3000/bypass/https://facebook.com"></iframe>
 </body>
 
 </html>
