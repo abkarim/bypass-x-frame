@@ -3,6 +3,10 @@ const axios = require("axios");
 const cors = require("cors");
 const helmet = require("helmet");
 const https = require("https");
+const {
+    cleanAndSetResponseHeader,
+    cleanAndReturnRequestHeader,
+} = require("./util/headers");
 const app = express();
 const port = 3000;
 
@@ -50,49 +54,17 @@ app.use("/bypass/*", async (req, res) => {
     const url = req.params[0];
     const domain = extractDomain(url);
 
-    const reqMethod = req.method;
-    const reqHeaders = Object.fromEntries(
-        Object.entries(req.headers).filter(([key]) => {
-            if (key.startsWith("sec-fetch")) return false;
-
-            if (key === "host" || key === "referer") return false;
-
-            if (key.includes("upgrade-insecure-request")) return false;
-
-            if (key.includes("user-agent")) return false;
-
-            if (key.includes("accept")) return false;
-
-            return true;
-        })
-    );
-
     try {
         const response = await axios({
-            method: reqMethod,
+            method: req.method,
             url,
-            headers: reqHeaders,
+            headers: cleanAndReturnRequestHeader(req.headers),
             responseType: "arraybuffer",
             httpAgent: agent,
             validateStatus: null,
         });
 
-        for (const [key, value] of Object.entries(response.headers)) {
-            if (key.startsWith("x-")) continue;
-
-            if (key.startsWith("cross-")) continue;
-
-            if (key.startsWith("access-")) continue;
-
-            if (key.startsWith("content-")) continue;
-
-            if (key.startsWith("document-")) continue;
-
-            if (key.startsWith("report")) continue;
-
-            res.setHeader(key, value);
-            // console.log(key, value);
-        }
+        cleanAndSetResponseHeader(response, res);
 
         const contentType = response.headers["content-type"] || "";
         res.status(response.status);
