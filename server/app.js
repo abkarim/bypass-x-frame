@@ -7,6 +7,8 @@ import {
     cleanAndReturnRequestHeader,
     cleanAndSetResponseHeader,
 } from "./util/headers.js";
+import { extractDomain } from "./util/URL.js";
+import { modifyHTML } from "./util/HTML.js";
 
 const app = express();
 const port = 3000;
@@ -14,19 +16,6 @@ const port = 3000;
 const agent = new https.Agent({
     rejectUnauthorized: false, // ignore invalid certs
 });
-
-/**
- * Extract domain from a url
- *
- * @param {string} url
- * @returns
- */
-function extractDomain(url) {
-    const match = url.match(
-        /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im
-    );
-    return match && match[0];
-}
 
 /**
  * Prepare final data
@@ -77,7 +66,11 @@ app.use("/bypass/*", async (req, res) => {
             res.json(data);
         } else if (contentType.includes("text/")) {
             data = Buffer.from(response.data).toString("utf-8");
-            console.log("text");
+
+            if (contentType.includes("text/html")) {
+                data = await modifyHTML(data);
+            }
+
             res.send(data);
         } else {
             data = Buffer.from(response.data);
