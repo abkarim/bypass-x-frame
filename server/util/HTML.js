@@ -2,6 +2,24 @@ import fs from "node:fs/promises";
 import appRootPath from "app-root-path";
 
 /**
+ * Insert html at the head element
+ *
+ * @param {string} HTML_to_insert
+ * @param {string} pageHTML
+ * @param {string} position top|bottom
+ * @returns
+ */
+export function insertAtTheHead(HTML_to_insert, pageHTML, position = "bottom") {
+    let regex = /(<head>)/;
+    if (position === "top") {
+        return pageHTML.replace(regex, `$1 ${HTML_to_insert}`);
+    }
+
+    regex = /(<\/head>)/;
+    return pageHTML.replace(regex, `${HTML_to_insert} $1`);
+}
+
+/**
  * Insert string the the bottom of the page
  * this insertion happens before the body closing tag
  *
@@ -36,10 +54,21 @@ export function insertJS(content, html) {
  * Modify response html to handle necessary things
  *
  * @param {string} HTML
+ * @param {import("express").Request} req
  * @returns {string}
  */
-export async function modifyHTML(HTML) {
+export async function modifyHTML(HTML, req) {
     try {
+        /**
+         * Add base url to handle relative links
+         *
+         */
+        HTML = insertAtTheHead(
+            `<base href="${req.params[0]}" target="_self" >`,
+            HTML,
+            "top"
+        );
+
         /**
          * Add script to communicate using postMessage
          */

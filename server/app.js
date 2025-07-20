@@ -40,8 +40,9 @@ app.use(
     })
 );
 
-app.use("/bypass/*", async (req, res) => {
+app.use("/*", async (req, res) => {
     const url = req.params[0];
+    console.log(req);
     const domain = extractDomain(url);
 
     try {
@@ -68,7 +69,7 @@ app.use("/bypass/*", async (req, res) => {
             data = Buffer.from(response.data).toString("utf-8");
 
             if (contentType.includes("text/html")) {
-                data = await modifyHTML(data);
+                data = await modifyHTML(data, req);
             }
 
             res.send(data);
