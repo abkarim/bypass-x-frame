@@ -6,6 +6,11 @@ iframe.addEventListener("load", () => {
 });
 
 /**
+ * Track favicon
+ */
+let faviconAdded = false;
+
+/**
  * Get data from iframe
  */
 window.addEventListener("message", (event) => {
@@ -29,8 +34,22 @@ window.addEventListener("message", (event) => {
                  * Set favicon
                  */
                 if (data.favIconHTML) {
+                    /**
+                     * Remove previous favicon if added
+                     */
+                    if (faviconAdded) {
+                        const prevIcon =
+                            document.querySelector("link[rel='icon']");
+                        if (prevIcon) prevIcon.remove();
+                    }
+
+                    /**
+                     * Only add favicon if not added already
+                     */
                     document.head.innerHTML =
                         document.head.innerHTML + data.favIconHTML;
+
+                    faviconAdded = true;
                 }
         }
     }
