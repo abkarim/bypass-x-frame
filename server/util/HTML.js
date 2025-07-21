@@ -79,6 +79,30 @@ export async function modifyHTML(HTML, req) {
             HTML
         );
 
+        /**
+         * Add script to add proxy to links
+         */
+        HTML = insertJS(
+            await fs.readFile(
+                appRootPath.resolve(
+                    "/server/frontend_scripts/addProxyToLinks.js"
+                )
+            ),
+            HTML
+        );
+
+        /**
+         * Register service worker
+         */
+        HTML = insertJS(
+            await fs.readFile(
+                appRootPath.resolve(
+                    "/server/frontend_scripts/registerServiceWorker.js"
+                )
+            ),
+            HTML
+        );
+
         // if (process.env.NODE_ENV === "development") {
         //     try {
         //         const clipboardy = await import("clipboardy");
