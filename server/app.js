@@ -9,6 +9,7 @@ import {
 } from "./util/headers.js";
 import { extractDomain } from "./util/URL.js";
 import { modifyHTML } from "./util/HTML.js";
+import appRootPath from "app-root-path";
 
 const app = express();
 const port = 3000;
@@ -40,9 +41,10 @@ app.use(
     })
 );
 
+app.use(express.static(appRootPath.resolve("server/public")));
+
 app.use("/*", async (req, res) => {
     const url = req.params[0];
-    console.log(req);
     const domain = extractDomain(url);
 
     try {
