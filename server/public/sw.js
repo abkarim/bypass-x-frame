@@ -13,7 +13,7 @@ self.addEventListener("fetch", (e) => {
      * css, images, js etc
      */
     const assetsRegex =
-        /.(js|css|png|jpg|jpeg|svg|woff2?|ttf|eot|ico|gif|webp)$/gm;
+        /.(js|css|png|jpg|jpeg|svg|woff2?|ttf|eot|ico|gif|webp)(\?[\s\S]+)?$/gm;
     if (assetsRegex.test(url)) return;
 
     /**
