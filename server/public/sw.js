@@ -1,37 +1,56 @@
-let origin;
-
-self.addEventListener("message", (e) => {
-    /**
-     * Get origin from website
-     */
-    if (e.data?.type === "origin") {
-        origin = e.data.origin;
-    }
-});
-
 self.addEventListener("fetch", (e) => {
-    const { mode, url } = e.request;
-    console.log({ url, origin, mode });
+    const { mode, url, referrer } = e.request;
 
-    // /**
-    //  * Use proxy if a request want to communicate
-    //  */
-    // if (!url.toString().startsWith(origin)) {
-    //     /**
-    //      * If this is a static file request do nothing
-    //      */
+    /**
+     * This is the main page request
+     * no need to intercept here
+     * this is already using proxy
+     */
+    if (mode === "navigate") return;
 
-    //     const redirectURL = `${origin}/${url}`;
-    //     console.log(`${url} redirected to ${redirectURL}`);
-    //     // e.respondWith(
-    //     //     fetch(redirectURL, {
-    //     //         method: e.request.method,
-    //     //         headers: e.request.headers,
-    //     //     })
-    //     // );
-    // }
+    /**
+     * Ignore static files
+     * css, images, js etc
+     */
+    const assetsRegex =
+        /.(js|css|png|jpg|jpeg|svg|woff2?|ttf|eot|ico|gif|webp)$/gm;
+    if (assetsRegex.test(url)) return;
 
-    if (mode === "navigate") {
-        console.log("navigating to ", url);
+    /**
+     * Use proxy if a request want to communicate
+     */
+    if (!url.startsWith(referrer)) {
+        const redirectURL = `${referrer}${url}`;
+        console.log(`${url} redirected to ${redirectURL}`);
+
+        e.respondWith(
+            (async () => {
+                try {
+                    const reqClone = e.request.clone();
+
+                    const newRequest = new Request(redirectURL, {
+                        method: reqClone.method,
+                        headers: reqClone.headers,
+                        body:
+                            reqClone.method !== "GET" &&
+                            reqClone.method !== "HEAD"
+                                ? reqClone.body
+                                : undefined,
+                        duplex:
+                            reqClone.method !== "GET" &&
+                            reqClone.method !== "HEAD"
+                                ? "half"
+                                : undefined,
+                    });
+
+                    return await fetch(newRequest);
+                } catch (err) {
+                    console.error("Proxy fetch failed:", err);
+                    return new Response("Internal proxy error", {
+                        status: 500,
+                    });
+                }
+            })()
+        );
     }
 });
