@@ -60,6 +60,12 @@ export function insertJS(content, html) {
 export async function modifyHTML(HTML, req) {
     try {
         /**
+         * Remove security integrity attribute
+         */
+        const regexToMatch = /integrity="[\S]+"/gm;
+        HTML = HTML.replace(regexToMatch, " ");
+
+        /**
          * Add base url to handle relative links
          *
          */
@@ -103,15 +109,15 @@ export async function modifyHTML(HTML, req) {
             HTML
         );
 
-        // if (process.env.NODE_ENV === "development") {
-        //     try {
-        //         const clipboardy = await import("clipboardy");
-        //         await clipboardy.default.write(HTML);
-        //         console.log("copied to clipboard");
-        //     } catch (err) {
-        //         console.error(err);
-        //     }
-        // }
+        if (process.env.NODE_ENV === "development") {
+            try {
+                const clipboardy = await import("clipboardy");
+                await clipboardy.default.write(HTML);
+                console.log("copied to clipboard");
+            } catch (err) {
+                console.error(err);
+            }
+        }
     } catch (err) {
         console.log(err);
     } finally {
