@@ -48,14 +48,16 @@ app.use("/*", async (req, res) => {
     const domain = extractDomain(url);
 
     try {
-        const response = await axios({
+        const axiosOptions = {
             method: req.method,
             url,
             headers: cleanAndReturnRequestHeader(req.headers),
             responseType: "arraybuffer",
             httpAgent: agent,
             validateStatus: null,
-        });
+        };
+
+        const response = await axios(axiosOptions);
 
         cleanAndSetResponseHeader(response, res);
 
@@ -67,18 +69,18 @@ app.use("/*", async (req, res) => {
         if (contentType.includes("application/json")) {
             data = JSON.parse(Buffer.from(response.data).toString("utf-8"));
             res.json(data);
+            return;
         } else if (contentType.includes("text/")) {
             data = Buffer.from(response.data).toString("utf-8");
 
             if (contentType.includes("text/html")) {
                 data = await modifyHTML(data, req);
             }
-
-            res.send(data);
         } else {
             data = Buffer.from(response.data);
-            res.send(data);
         }
+
+        res.send(data);
     } catch (err) {
         console.log({ err });
         console.error("Axios proxy error:", err.message);
