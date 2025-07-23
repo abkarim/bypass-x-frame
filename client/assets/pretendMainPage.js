@@ -1,5 +1,15 @@
 const iframe = document.getElementsByTagName("iframe")[0];
-const iframeURL = new URL(iframe.src);
+
+/**
+ * Set iframe src via src-proxy attribute
+ */
+const iframeURL = new URL(iframe.getAttribute("src-proxy"));
+const parentParams = new URLSearchParams(window.location.search);
+parentParams.forEach((value, key) => {
+    iframeURL.searchParams.set(key, value);
+});
+
+iframe.src = iframeURL.toString();
 
 iframe.addEventListener("load", () => {
     iframe.contentWindow.postMessage("info", "*");
