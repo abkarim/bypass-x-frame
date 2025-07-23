@@ -7,7 +7,6 @@ import {
     cleanAndReturnRequestHeader,
     cleanAndSetResponseHeader,
 } from "./util/headers.js";
-import { extractDomain } from "./util/URL.js";
 import { modifyHTML } from "./util/HTML.js";
 import appRootPath from "app-root-path";
 
@@ -17,14 +16,6 @@ const port = 3000;
 const agent = new https.Agent({
     rejectUnauthorized: false, // ignore invalid certs
 });
-
-/**
- * Prepare final data
- */
-function prepareFinalData(data, domain) {
-    let finalData = data.replaceAll(/.(?<=="\/)(?<=.[^"]+)/gim, `${domain}/`);
-    return finalData;
-}
 
 app.use(
     cors({
@@ -45,7 +36,6 @@ app.use(express.static(appRootPath.resolve("server/public")));
 
 app.use("/*", async (req, res) => {
     const url = req.params[0];
-    const domain = extractDomain(url);
 
     try {
         const axiosOptions = {

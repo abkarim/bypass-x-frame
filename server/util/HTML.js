@@ -70,7 +70,10 @@ export async function modifyHTML(HTML, req) {
          *
          */
         HTML = insertAtTheHead(
-            `<base href="${req.params[0]}" target="_self" >`,
+            `<base href="${req.params[0].replace(
+                /([\/]+)$/,
+                ""
+            )}/" target="_self" >`,
             HTML,
             "top"
         );
@@ -109,15 +112,15 @@ export async function modifyHTML(HTML, req) {
             HTML
         );
 
-        if (process.env.NODE_ENV === "development") {
-            try {
-                const clipboardy = await import("clipboardy");
-                await clipboardy.default.write(HTML);
-                console.log("copied to clipboard");
-            } catch (err) {
-                console.error(err);
-            }
-        }
+        // if (process.env.NODE_ENV === "development") {
+        //     try {
+        //         const clipboardy = await import("clipboardy");
+        //         await clipboardy.default.write(HTML);
+        //         console.log("copied to clipboard");
+        //     } catch (err) {
+        //         console.error(err);
+        //     }
+        // }
     } catch (err) {
         console.log(err);
     } finally {
