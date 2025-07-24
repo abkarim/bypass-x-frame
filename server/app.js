@@ -32,7 +32,7 @@ app.use(
     })
 );
 
-app.use(express.static(appRootPath.resolve("server/public")));
+app.use(express.static(appRootPath.resolve("public")));
 
 app.use("/*", async (req, res) => {
     const url = req.params[0];

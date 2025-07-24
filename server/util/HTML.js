@@ -83,7 +83,7 @@ export async function modifyHTML(HTML, req) {
          */
         HTML = insertJS(
             await fs.readFile(
-                appRootPath.resolve("/server/frontend_scripts/postMessage.js")
+                appRootPath.resolve("/frontend_scripts/postMessage.js")
             ),
             HTML
         );
@@ -93,9 +93,7 @@ export async function modifyHTML(HTML, req) {
          */
         HTML = insertJS(
             await fs.readFile(
-                appRootPath.resolve(
-                    "/server/frontend_scripts/addProxyToLinks.js"
-                )
+                appRootPath.resolve("/frontend_scripts/addProxyToLinks.js")
             ),
             HTML
         );
@@ -106,7 +104,7 @@ export async function modifyHTML(HTML, req) {
         HTML = insertJS(
             await fs.readFile(
                 appRootPath.resolve(
-                    "/server/frontend_scripts/registerServiceWorker.js"
+                    "/frontend_scripts/registerServiceWorker.js"
                 )
             ),
             HTML
