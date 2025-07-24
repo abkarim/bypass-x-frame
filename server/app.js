@@ -32,7 +32,7 @@ app.use(
     })
 );
 
-app.use(express.static(appRootPath.resolve("public")));
+app.use(express.static(appRootPath.resolve("/public")));
 
 app.use("/*", async (req, res) => {
     const url = req.params[0];
@@ -73,7 +73,7 @@ app.use("/*", async (req, res) => {
         res.send(data);
     } catch (err) {
         console.log({ err });
-        console.error("Axios proxy error:", err.message);
+        console.error(`Axios proxy error: ${req.url} {err.message}`);
         res.status(500).send("Proxy error");
     }
 });
