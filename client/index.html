@@ -7,14 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Only use these js if you want to use title, favicon etc features from the iframe
      and it's intended for only one iframe element in this file -->
-    <link rel="stylesheet" href="/assets/style.css">
     <script src="/assets/pretendMainPage.js" defer></script>
 </head>
 
-<body>
+<body style="margin: 0; width: 100vw; height: 100vh; overflow: hidden;">
     <iframe src-proxy="http://localhost:3000/https://facebook.com"
         allow="accelerometer; autoplay; camera; encrypted-media; fullscreen; geolocation; gyroscope; microphone; midi; clipboard-read; clipboard-write; display-capture; web-share; payment; usb; xr-spatial-tracking; focus-without-user-activation"
-        allowfullscreen></iframe>
+        allowfullscreen style="border: 0; width: 100%; height: 100%;"></iframe>
 </body>
 
 </html>
