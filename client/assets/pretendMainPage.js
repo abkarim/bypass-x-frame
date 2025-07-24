@@ -11,8 +11,30 @@ parentParams.forEach((value, key) => {
 
 iframe.src = iframeURL.toString();
 
+/**
+ * Add events inside iframe
+ * to listen here
+ *
+ * format is
+ * [{querySelector, [events], preventDefault}]
+ */
+const eventsToListen = [
+    {
+        // selector: "button[name='login']",
+        // events: ["click", "mouseover"],
+        // preventDefault: true,
+    },
+];
+
 iframe.addEventListener("load", () => {
     iframe.contentWindow.postMessage("info", "*");
+    iframe.contentWindow.postMessage(
+        {
+            name: "eventsToListen",
+            data: eventsToListen,
+        },
+        "*"
+    );
 });
 
 /**
@@ -37,6 +59,9 @@ window.addEventListener("message", (event) => {
         const data = event.data;
 
         switch (data.name) {
+            /**
+             * Message for site info
+             */
             case "info":
                 document.title = data.title;
 
@@ -61,6 +86,18 @@ window.addEventListener("message", (event) => {
 
                     faviconAdded = true;
                 }
+
+                break;
+
+            /**
+             * Message for event fire
+             * that you told to listen
+             */
+            case "eventThatYouToldToListenFired":
+                console.log({ selector: data.selector, event: data.event });
+                alert("wake up man! do something");
+
+                break;
         }
     }
 });

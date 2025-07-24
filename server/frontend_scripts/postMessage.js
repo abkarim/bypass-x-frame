@@ -1,11 +1,13 @@
 window.addEventListener("message", (e) => {
+    const { data, source, origin } = e;
+
     // this is bound to the iframe embedder page js
-    if (e.data === "info") {
+    if (data === "info") {
         /**
          * Return necessary data
          */
         const data = {
-            name: e.data,
+            name: data,
         };
         data.title = document.title;
 
@@ -17,6 +19,45 @@ window.addEventListener("message", (e) => {
             data.favIconHTML = favIconElement.outerHTML;
         }
 
-        e.source.postMessage(data, e.origin);
+        source.postMessage(data, origin);
+    }
+
+    /**
+     * Listen for events
+     *
+     */
+    if (
+        Object.prototype.toString.call(data) === "[object Object]" &&
+        data.name === "eventsToListen"
+    ) {
+        data.data.forEach(({ events, selector, preventDefault }) => {
+            const elements = [...document.querySelectorAll(selector)];
+
+            /**
+             * Loop over event elements found
+             */
+            elements.forEach((element) => {
+                /**
+                 * Add every events in this element
+                 */
+                events.forEach((event) => {
+                    element.addEventListener(event, (e) => {
+                        if (preventDefault) e.preventDefault();
+
+                        /**
+                         * Tell source that event has been fired
+                         */
+                        source.postMessage(
+                            {
+                                name: "eventThatYouToldToListenFired",
+                                selector,
+                                event,
+                            },
+                            origin
+                        );
+                    });
+                });
+            });
+        });
     }
 });
