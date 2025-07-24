@@ -6,20 +6,20 @@ window.addEventListener("message", (e) => {
         /**
          * Return necessary data
          */
-        const data = {
+        const dataToPass = {
             name: data,
         };
-        data.title = document.title;
+        dataToPass.title = document.title;
 
         /**
          * Get favicon html
          */
         const favIconElement = document.querySelector("link[rel='icon']");
         if (favIconElement) {
-            data.favIconHTML = favIconElement.outerHTML;
+            dataToPass.favIconHTML = favIconElement.outerHTML;
         }
 
-        source.postMessage(data, origin);
+        source.postMessage(dataToPass, origin);
     }
 
     /**
