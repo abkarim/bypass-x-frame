@@ -8,7 +8,11 @@ import {
     cleanAndSetResponseHeader,
 } from "./util/headers.js";
 import { modifyHTML } from "./util/HTML.js";
-import appRootPath from "app-root-path";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+export const __root_dirname = dirname(__filename);
 
 const app = express();
 const port = 3000;
@@ -32,7 +36,7 @@ app.use(
     })
 );
 
-app.use(express.static(appRootPath.resolve("/public")));
+app.use(express.static(path.join(__root_dirname, "public")));
 
 app.use("/*", async (req, res) => {
     const url = req.params[0];

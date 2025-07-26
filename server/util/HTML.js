@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
-import appRootPath from "app-root-path";
+import path from "node:path";
+import { __root_dirname } from "../app.js";
 
 /**
  * Insert html at the head element
@@ -83,7 +84,7 @@ export async function modifyHTML(HTML, req) {
          */
         HTML = insertJS(
             await fs.readFile(
-                appRootPath.resolve("/frontend_scripts/postMessage.js")
+                path.join(__root_dirname, "/frontend_scripts/postMessage.js")
             ),
             HTML
         );
@@ -93,7 +94,10 @@ export async function modifyHTML(HTML, req) {
          */
         HTML = insertJS(
             await fs.readFile(
-                appRootPath.resolve("/frontend_scripts/addProxyToLinks.js")
+                path.join(
+                    __root_dirname,
+                    "/frontend_scripts/addProxyToLinks.js"
+                )
             ),
             HTML
         );
@@ -103,7 +107,8 @@ export async function modifyHTML(HTML, req) {
          */
         HTML = insertJS(
             await fs.readFile(
-                appRootPath.resolve(
+                path.join(
+                    __root_dirname,
                     "/frontend_scripts/registerServiceWorker.js"
                 )
             ),
